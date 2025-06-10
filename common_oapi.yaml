@@ -1,0 +1,41 @@
+openapi: 3.0.1
+info:
+  title: Common
+  version: "1.0"
+components:
+  schemas:
+    GetVersionResponse:
+      description: Version response
+      required:
+        - version
+        - user
+        - time
+      type: object
+      properties:
+        version:
+          x-omitempty: false
+          type: string
+        user:
+          x-omitempty: false
+          type: string
+        time:
+          x-omitempty: false
+          type: string
+    FecItem:
+      description: FEC item
+      type: object
+      properties:
+        label:
+          x-omitempty: false
+          type: string
+        probability:
+          format: float
+          type: number
+      required:
+        - label
+        - probability
+    Fec:
+      description: FEC
+      type: array
+      items:
+        $ref: '#/components/schemas/FecItem'
