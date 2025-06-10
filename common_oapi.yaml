@@ -41,3 +41,14 @@ components:
         $ref: '#/components/schemas/FecItem'
 
 paths:
+  /version:
+    get:
+      summary: Get version
+      operationId: GetVersion
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetVersionResponse'
