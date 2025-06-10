@@ -16,6 +16,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Fec FEC
+type Fec = []FecItem
+
+// FecItem FEC item
+type FecItem struct {
+	Label       string  `json:"label"`
+	Probability float32 `json:"probability"`
+}
+
 // GetVersionResponse Version response
 type GetVersionResponse struct {
 	Time    string `json:"time"`
@@ -85,11 +94,13 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"H4sIAAAAAAAC/4xRsU5DMQz8lepgDH2vsGVlQIgBiYEFMYTUbVM1cUhcRFXl31GSthSJoVMs584+3+1h",
-	"2UcOFCRD75Htirxp5QPJK6XsOLxQjhwy1e6csk0uiuMAjQNgko4IhZg4UhJHbYg432iyiwSNLMmFJRS+",
-	"b9g7IR9lB70wm0xFYZspXQz+6qsvxBeFRJ9bl2gO/XYiH3aqrvNdHUfxx5qsoFSeCwvup8im/t2z9416",
-	"UoDZdERR4EjBRAeNu+k4nVUzjKyaD8OZ3CVJfapNpvr4OIc+cxtVarezUW/HsT6Wg1BoTBPjxtnGHda5",
-	"D+3B1eo60QIaV8NvssMh1uGfTNuNf1N9fkJt5q33Ju26uMnxgFJK+QkAAP//fv2qCzYCAAA=",
+	"H4sIAAAAAAAC/4xSu27jMBD8FWPvSp0l33VsjXNgpAiQIk2QgqJXNg3xEXIVRDD478FSkuMXEFdLiTuz",
+	"M8M9gHLGO4uWIogDRLVDI/NxhYrLBqMK2pN2FgSs/i+hAE1ocs/vgA0I+FV+s5QjRblCtSY0kAqg3iMI",
+	"kCHInr+nq1v0MyaHAnxwHgNpzINaWWPLh5EqUtB2CwV8/nGGEZ56EI1sI6aMrWWtW80/D9C4YCSBgKZ1",
+	"kuCox3amxgApFRDwvdMBNyBex1nnLG9HkKv3qIhdPCC9YIja2WeM3tmI14bGhlmYOi6NkTZ4t68uYri7",
+	"+WMYfWf/RQYTeJxZDDqvU2Ccto0brFDLd0tnTIYeFcBiXnFizqOVXoOAf/NqvuAwJO1yDuWJ3C0SF45J",
+	"co7rDYiTtIGlDnFm6N+q4qKcJbQZKb1vtcrYch8H0mEtf1raG2+aPZ6/6tNjXprYGSNDP4ibTQZSSukr",
+	"AAD//xcQ2QVXAwAA",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file
