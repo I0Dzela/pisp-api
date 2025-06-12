@@ -55,7 +55,7 @@ FROM alpine:3.19.1
 # create i0pisp executable directory
 RUN mkdir -p /app
 RUN mkdir -p /usr/local/bin/i0pisp
-RUN mkdir -p /usr/local/bin/i0pisp/openapi
+RUN mkdir -p /app/openapi
 
 # pisp files binary
 COPY --from=build /usr/local/app/bin/ /usr/local/bin/i0pisp
@@ -76,10 +76,10 @@ COPY --from=build /usr/local/app/rootCA.crt /usr/local/share/ca-certificates/roo
 RUN cat /usr/local/share/ca-certificates/rootCA.crt >> /etc/ssl/certs/ca-certificates.crt
 
 # openapi specs
-COPY --from=build /usr/local/app/openapi/common.yaml /usr/local/bin/i0pisp/openapi/common.yaml
-COPY --from=build /usr/local/app/openapi/facekit.yaml /usr/local/bin/i0pisp/openapi/facekit.yaml
-COPY --from=build /usr/local/app/openapi/file.yaml /usr/local/bin/i0pisp/openapi/file.yaml
-COPY --from=build /usr/local/app/openapi/relation.yaml /usr/local/bin/i0pisp/openapi/relation.yaml
-COPY --from=build /usr/local/app/openapi/user.yaml /usr/local/bin/i0pisp/openapi/user.yaml
+COPY --from=build /usr/local/app/openapi/common.yaml /app/openapi/common.yaml
+COPY --from=build /usr/local/app/openapi/facekit.yaml /app/openapi/facekit.yaml
+COPY --from=build /usr/local/app/openapi/file.yaml /app/openapi/file.yaml
+COPY --from=build /usr/local/app/openapi/relation.yaml /app/openapi/relation.yaml
+COPY --from=build /usr/local/app/openapi/user.yaml /app/openapi/user.yaml
 
 ENTRYPOINT ["sh", "/app/start.sh"]
