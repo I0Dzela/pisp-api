@@ -1,0 +1,9 @@
+package: commonapi
+generate:
+  gin-server: true
+  models: true
+  embedded-spec: true
+output-options:
+  # to make sure that all types are generated
+  skip-prune: true
+output: gen/common/commonapi.gen.go

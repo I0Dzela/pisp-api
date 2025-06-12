@@ -1,0 +1,11 @@
+package: relationapi
+generate:
+  gin-server: true
+  models: true
+  embedded-spec: true
+output-options:
+  # to make sure that all types are generated
+  skip-prune: true
+output: gen/relation/relationapi.gen.go
+import-mapping:
+  ./common.yaml: github.com/I0Dzela/pisp-specs/gen/common

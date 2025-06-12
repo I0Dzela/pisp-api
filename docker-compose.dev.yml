@@ -1,0 +1,14 @@
+version: "3.9"
+services:
+  specs:
+    build:
+      context: .
+      dockerfile: specs.dev.dockerfile
+    volumes:
+      - type: bind
+        source: ./
+        target: /app
+networks:
+  pisp:
+    driver: bridge
+    name: pisp

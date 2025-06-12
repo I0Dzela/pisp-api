@@ -1,0 +1,378 @@
+openapi: 3.0.1
+info:
+  title: Files Server
+  version: "1.2"
+servers:
+  - url: https://i0pisp.com:7009/
+  - url: https://pisp.local:6008/
+paths:
+  /files:
+    get:
+      summary: Get files
+      operationId: GetFiles
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+          description: Page
+          example: 0
+          required: false
+        - in: query
+          name: pageSize
+          schema:
+            type: integer
+          description: Page size
+          example: 0
+          required: false
+        - in: query
+          name: usedId
+          schema:
+            type: integer
+            format: uint64
+          description: User id
+          required: false
+        - in: query
+          name: mime
+          schema:
+            type: string
+            enum:
+              - image/jpeg
+              - video/mp4
+          description: File processing mime
+          example: mime=image/jpeg
+          required: false
+        - in: query
+          name: from
+          schema:
+            type: string
+            format: date
+          description: File processing status
+          required: false
+        - in: query
+          name: to
+          schema:
+            type: string
+            format: date
+          description: File processing status
+          required: false
+        - in: query
+          name: search
+          schema:
+            type: string
+          description: Filter by filename
+          required: false
+        - in: query
+          name: type
+          description: File type
+          schema:
+            type: string
+            enum: [ INPUT, EXTRACTED ]
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetFilesResponse'
+  /files/{id}:
+    get:
+      summary: Get file by id
+      operationId: GetFile
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            format: uint64
+          required: true
+          description: File id
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetFileResponse'
+  /files/file-data/{id}:
+    get:
+      summary: Get file data by id
+      operationId: GetFileData
+      security:
+        - signAuth: [ ]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            format: uint64
+          required: true
+          description: File id
+          example: 4
+        - in: query
+          name: thumbnail
+          schema:
+            type: boolean
+          description: Get thumbnail
+          example: true
+          required: false
+        - in: query
+          name: p
+          schema:
+            type: string
+          description: Auth
+          required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+  /files/{id}/metadata:
+    get:
+      summary: Get file metadata by id
+      operationId: GetFileMetadata
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            format: uint64
+          required: true
+          description: File id
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetFileMetadataResponse'
+  /files/version:
+    get:
+      summary: Get file service version
+      operationId: GetVersion
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: './common.yaml#/components/schemas/GetVersionResponse'
+  /files/cookies:
+    post:
+      summary: Set google cookies
+      operationId: SetCookies
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                cookies:
+                  type: string
+              required:
+                - cookies
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SetCookiesResponse'
+components:
+  securitySchemes:
+    bearerAuth: # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    FileMetadata:
+      description: Object representing file metadata
+      type: object
+      properties:
+        id:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        data:
+          x-omitempty: false
+          type: string
+          x-go-type: json.RawMessage
+          x-go-type-import:
+            path: json
+            name: RawMessage
+        fileId:
+          x-omitempty: false
+          type: integer
+          format: uint64
+          example: 10
+        createdAt:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+        updatedAt:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+        deletedAt:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+    GetFileMetadataResponse:
+      description: Object representing file metadata
+      required:
+        - id
+        - data
+        - fileId
+        - createdAt
+        - updatedAt
+      type: object
+      properties:
+        id:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        data:
+          x-omitempty: false
+          type: string
+          x-go-type: json.RawMessage
+          x-go-type-import:
+            path: json
+            name: RawMessage
+        fileId:
+          x-omitempty: false
+          type: integer
+          format: uint64
+          example: 10
+        createdAt:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+        updatedAt:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+        deletedAt:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+    GetFileResponse:
+      description: Object representing file
+      required:
+        - id
+        - mime
+        - filePath
+        - fileUrl
+        - createdAt
+        - updatedAt
+      type: object
+      properties:
+        id:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        size:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        filename:
+          x-omitempty: false
+          type: string
+        mime:
+          x-omitempty: false
+          type: string
+        filePath:
+          x-omitempty: false
+          type: string
+        fileUrl:
+          x-omitempty: false
+          type: string
+        thumbFilePath:
+          x-omitempty: false
+          type: string
+        metadata:
+          x-omitempty: false
+          type: string
+          x-go-type: json.RawMessage
+          x-go-type-import:
+            path: json
+            name: RawMessage
+        downloadUrl:
+          x-omitempty: false
+          type: string
+        createdAt:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+        updatedAt:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+        deletedAt:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+    GetFilesResponse:
+      description: Get files response
+      required:
+        - rows
+        - count
+      type: object
+      properties:
+        rows:
+          x-omitempty: false
+          type: array
+          items:
+            $ref: '#/components/schemas/GetFileResponse'
+        count:
+          x-omitempty: false
+          type: integer
+    SetCookiesResponse:
+      description: Set cookies response
+      required:
+        - message
+      type: object
+      properties:
+        message:
+          x-omitempty: false
+          type: string

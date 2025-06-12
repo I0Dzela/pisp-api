@@ -1,0 +1,546 @@
+openapi: 3.0.1
+info:
+  title: Users Server
+  version: "1.2"
+servers:
+  - url: https://i0pisp.com:7009/
+  - url: https://pisp.local:6008/
+paths:
+  /users:
+    get:
+      summary: Get users
+      operationId: GetUsers
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+          description: Page
+          example: 0
+          required: false
+        - in: query
+          name: pageSize
+          schema:
+            type: integer
+          description: Page size
+          example: 0
+          required: false
+        - in: query
+          name: search
+          schema:
+            type: string
+          description: Search
+          required: false
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetUsersResponse'
+  /users/version:
+    get:
+      summary: Get users service version
+      operationId: GetVersion
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: './common.yaml#/components/schemas/GetVersionResponse'
+  /users/{id}:
+    get:
+      summary: Get user by id
+      operationId: GetUser
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            format: uint64
+          required: true
+          description: User id
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetUserResponse'
+    put:
+      summary: Update user by id
+      operationId: UpdateUser
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        description: Request body containing user first and last name
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserDto'
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            format: uint64
+          required: true
+          description: User id
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetUserResponse'
+  /users/identity:
+    put:
+      summary: Update user identity by sub
+      operationId: UpdateUserIdentity
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        description: Body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserIdentityDto'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetUserResponse'
+  /users/{id}/profile-image:
+    post:
+      summary: Set profile image
+      operationId: SetProfileImage
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                myFile:
+                  type: string
+                  format: binary
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            format: uint64
+          required: true
+          description: User id
+      responses:
+        200:
+          description: Set profile image response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetUserResponse'
+  /users/{id}/familiarisation-image:
+    get:
+      summary: Get profile familiarisation images
+      operationId: GetFamiliarisationImages
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            format: uint64
+          required: true
+          description: User id
+        - in: query
+          name: page
+          schema:
+            type: integer
+          description: Page
+          required: false
+        - in: query
+          name: pageSize
+          schema:
+            type: integer
+          description: Page size
+          required: false
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetFamiliarisationImagesResponse'
+    put:
+      summary: Update user familiarisation image
+      operationId: UpdateFamiliarisationImages
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/UpdateFamiliarisationImageDto'
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: User id
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateFamiliarisationImagesResponse'
+components:
+  securitySchemes:
+    bearerAuth: # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    GetUsersResponse:
+      description: Object representing list of users and count
+      required:
+        - rows
+        - count
+      type: object
+      properties:
+        rows:
+          x-omitempty: false
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        count:
+          x-omitempty: false
+          type: integer
+    User:
+      description: Object representing user
+      required:
+        - id
+        - firstName
+        - lastName
+        - email
+        - fileUrl
+        - createdAt
+        - updatedAt
+      type: object
+      properties:
+        id:
+          x-omitempty: false
+          type: integer
+          format: uint64
+        firstName:
+          x-omitempty: false
+          type: string
+        lastName:
+          x-omitempty: false
+          type: string
+        email:
+          x-omitempty: false
+          type: string
+        fileUrl:
+          x-omitempty: false
+          type: string
+        createdAt:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+        updatedAt:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+        deletedAt:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+    GetUserResponse:
+      description: User response
+      required:
+        - id
+        - firstName
+        - lastName
+        - email
+        - fileUrl
+        - createdAt
+        - updatedAt
+        - roles
+      type: object
+      properties:
+        id:
+          x-omitempty: false
+          type: integer
+          format: uint64
+        firstName:
+          x-omitempty: false
+          type: string
+        lastName:
+          x-omitempty: false
+          type: string
+        email:
+          x-omitempty: false
+          type: string
+        fileUrl:
+          x-omitempty: false
+          type: string
+        createdAt:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+        updatedAt:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+        deletedAt:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+        roles:
+          type: array
+          items:
+            type: string
+    UpdateUserDto:
+      description: Update user dto
+      type: object
+      properties:
+        firstName:
+          x-omitempty: false
+          type: string
+        lastName:
+          x-omitempty: false
+          type: string
+    UpdateUserIdentityDto:
+      description: Update user identity DTO
+      required:
+        - email
+        - firstName
+        - lastName
+        - sub
+      type: object
+      properties:
+        email:
+          x-omitempty: false
+          type: string
+        firstName:
+          x-omitempty: false
+          type: string
+        lastName:
+          x-omitempty: false
+          type: string
+        sub:
+          x-omitempty: false
+          type: string
+    GetFamiliarisationImagesResponse:
+      description: Get user profile familiarisation images
+      required:
+        - rows
+        - count
+      type: object
+      properties:
+        rows:
+          x-omitempty: false
+          type: array
+          items:
+            $ref: '#/components/schemas/Sample'
+        count:
+          x-omitempty: false
+          type: integer
+          format: uint32
+          example: 10
+    CreateUserProfileFamiliarisationImageFileResp:
+      description: Set user profile image request body
+      type: object
+      properties:
+        file_id:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+    UpdateFamiliarisationImageDto:
+      description: Update familiarisation image validity dto
+      type: object
+      properties:
+        sampleId:
+          x-omitempty: false
+          format: uint64
+          type: integer
+        valid:
+          x-omitempty: false
+          type: boolean
+    UpdateFamiliarisationImagesResponse:
+      description: Update familiarisation images response
+      required:
+        - updated
+      type: object
+      properties:
+        updated:
+          x-omitempty: false
+          type: integer
+          format: uint32
+    Sample:
+      description: Object representing sample
+      required:
+        - id
+        - desc
+        - userId
+        - fileId
+        - fileProcessingId
+        - valid
+        - detectionScore
+        - faceIdScore
+        - frame
+        - frameTime
+        - fileUrl
+        - face
+        - createdAt
+        - updatedAt
+      type: object
+      properties:
+        id:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        desc:
+          x-omitempty: false
+          type: array
+          items:
+            format: float
+            type: number
+        userId:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        fileId:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        fileProcessingId:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        valid:
+          x-omitempty: false
+          type: boolean
+        detectionScore:
+          x-omitempty: false
+          type: number
+        faceIdScore:
+          x-omitempty: false
+          type: number
+        frame:
+          x-omitempty: false
+          format: uint64
+          type: integer
+        frameTime:
+          x-omitempty: false
+          format: uint64
+          type: integer
+        fileUrl:
+          x-omitempty: false
+          type: string
+        face:
+          $ref: '#/components/schemas/Face'
+        createdAt:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+        updatedAt:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+        deletedAt:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+    Face:
+      description: Object representing face
+      type: object
+      properties:
+        id:
+          x-omitempty: false
+          format: uint64
+          type: integer
+        fileId:
+          x-omitempty: false
+          format: uint64
+          type: integer
+        frameImageId:
+          x-omitempty: false
+          format: uint64
+          type: integer
+        faceId:
+          x-omitempty: false
+          format: uint64
+          type: integer
+        filePath:
+          x-omitempty: false
+          type: string
+        fileUrl:
+          x-omitempty: false
+          type: string
+        fec:
+          $ref: './common.yaml#/components/schemas/Fec'
+        createdAt:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+      required:
+        - id
+        - fileId
+        - frameImageId
+        - faceId
+        - filePath
+        - fileUrl
+        - fec
+        - createdAt

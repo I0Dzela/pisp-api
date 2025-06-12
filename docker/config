@@ -1,0 +1,4 @@
+Host github.com
+  PreferredAuthentications publickey
+  IdentityFile ~/.ssh/repository-credentials
+

@@ -1,0 +1,1007 @@
+openapi: 3.0.1
+info:
+  title: Facekit Server
+  version: "1.2"
+servers:
+  - url: https://i0pisp.com:7009/
+  - url: https://pisp.local:6008/
+paths:
+  /facekit/file-processing:
+    post:
+      summary: Create file processing
+      operationId: CreateFileProcessing
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                filename:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      parameters:
+        - in: query
+          name: frameStep
+          schema:
+            type: integer
+            format: uint64
+          description: Frame step
+          example: 20
+          required: false
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CreateFileProcessingResponse'
+    get:
+      summary: Get file processing list
+      operationId: GetFileProcessingList
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+          description: Page
+          example: 0
+          required: false
+        - in: query
+          name: pageSize
+          schema:
+            type: integer
+          description: Page size
+          example: 0
+          required: false
+        - in: query
+          name: usedId
+          schema:
+            type: integer
+            format: uint64
+          description: User id
+          required: false
+        - in: query
+          name: mime
+          schema:
+            type: string
+            enum:
+              - image/jpeg
+              - video/mp4
+          description: File processing mime
+          example: mime=image/jpeg
+          required: false
+        - in: query
+          name: type
+          schema:
+            type: string
+            enum:
+              - URL
+              - UPLOAD
+          description: File processing type
+          example: url
+          required: false
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum:
+              - PROCESSING
+              - PROCESSED
+              - ERROR
+          description: File processing status
+          required: false
+        - in: query
+          name: from
+          schema:
+            type: string
+            format: date
+          description: File processing status
+          required: false
+        - in: query
+          name: to
+          schema:
+            type: string
+            format: date
+          description: File processing status
+          required: false
+        - in: query
+          name: search
+          schema:
+            type: string
+          description: Filter by filename
+          required: false
+        - in: query
+          name: fileId
+          schema:
+            type: integer
+            format: uint64
+          description: File id
+          required: false
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetFileProcessingListResponse'
+  /facekit/file-processing/file/{id}:
+    post:
+      summary: Create file processing for existing file
+      operationId: CreateFileProcessingByFileId
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            format: uint64
+          required: true
+          description: File id
+        - in: query
+          name: frameStep
+          schema:
+            type: integer
+            format: uint64
+          description: Frame step
+          example: 20
+          required: false
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CreateFileProcessingResponse'
+  /facekit/file-processing/{id}:
+    get:
+      summary: Get file processing by id
+      operationId: GetFileProcessing
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            format: uint64
+          required: true
+          description: File id
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetFileProcessingResponse'
+  /facekit/file-processing/{id}/frames:
+    get:
+      summary: Get frames
+      operationId: GetFrames
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            format: uint64
+          required: true
+          description: File processing id
+        - in: query
+          name: frames
+          schema:
+            type: array
+            items:
+              type: integer
+              format: uint64
+          description: Frames to filter
+          required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetFramesResponse'
+  /facekit/file-processing/{id}/status:
+    get:
+      summary: Get file processing status
+      operationId: GetStatus
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            format: uint64
+          required: true
+          description: File processing id
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetStatusResponse'
+  /facekit/file-processing/{id}/file:
+    get:
+      summary: Get file by file processing id
+      operationId: GetFile
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            format: uint64
+          required: true
+          description: File processing id
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetFileResponse'
+  /facekit/version:
+    get:
+      summary: Get facekit server version
+      operationId: GetVersion
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: './common.yaml#/components/schemas/GetVersionResponse'
+  /facekit/file-processing/download:
+    post:
+      summary: Create file processing download
+      operationId: CreateFileProcessingDownload
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        description: Download URL
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateFileProcessingDownloadRequest'
+      parameters:
+        - in: query
+          name: frameStep
+          schema:
+            type: integer
+          description: Frame step
+          example: 20
+          required: false
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateFileProcessingDownloadResponse'
+components:
+  securitySchemes:
+    bearerAuth: # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    CreateFileProcessingResponse:
+      description: Object representing successful file processing create
+      required:
+        - id
+        - filename
+      type: object
+      properties:
+        id:
+          x-omitempty: false
+          type: integer
+          format: uint64
+        filename:
+          x-omitempty: false
+          type: string
+        error:
+          x-omitempty: false
+          type: string
+    GetFileProcessingListResponse:
+      description: Object representing list of file processings and count
+      required:
+        - rows
+        - count
+      type: object
+      properties:
+        rows:
+          x-omitempty: false
+          type: array
+          items:
+            $ref: '#/components/schemas/FileProcessingListItem'
+        count:
+          x-omitempty: false
+          type: integer
+    FileProcessingListItem:
+      description: Object representing file processing
+      required:
+        - id
+        - fileId
+        - status
+        - type
+        - attempt
+        - fileUrl
+        - createdBy
+        - user
+        - createdAt
+        - updatedAt
+      type: object
+      properties:
+        id:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        fileId:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        status:
+          x-omitempty: false
+          type: string
+        type:
+          x-omitempty: false
+          type: string
+        error:
+          x-omitempty: false
+          type: string
+        attempt:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        filename:
+          x-omitempty: false
+          type: string
+        fileUrl:
+          x-omitempty: false
+          type: string
+        frameStep:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        createdBy:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        mime:
+          x-omitempty: false
+          type: string
+        user:
+          $ref: '#/components/schemas/CreatedByUser'
+        createdAt:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+        updatedAt:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+        deletedAt:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+    Frame:
+      description: Object representing frame image
+      type: object
+      properties:
+        id:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        fileId:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        fileProcessingId:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        faces:
+          x-omitempty: false
+          type: array
+          items:
+            $ref: '#/components/schemas/Face'
+        frame:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        frameTime:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        filePath:
+          x-omitempty: false
+          type: string
+        fileUrl:
+          x-omitempty: false
+          type: string
+        createdAt:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+        updatedAt:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+        deletedAt:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+    Face:
+      description: Object representing frame image
+      type: object
+      properties:
+        id:
+          x-omitempty: false
+          format: uint64
+          type: integer
+        fileId:
+          x-omitempty: false
+          format: uint64
+          type: integer
+        frameImageId:
+          x-omitempty: false
+          format: uint64
+          type: integer
+        faceId:
+          x-omitempty: false
+          format: uint64
+          type: integer
+        filePath:
+          x-omitempty: false
+          type: string
+        fileUrl:
+          x-omitempty: false
+          type: string
+        rectanglePMinX:
+          x-omitempty: false
+          format: int
+          type: integer
+          example: 10
+        rectanglePMinY:
+          x-omitempty: false
+          format: int
+          type: integer
+          example: 10
+        rectanglePMaxX:
+          x-omitempty: false
+          format: int
+          type: integer
+          example: 10
+        rectanglePMaxY:
+          x-omitempty: false
+          format: int
+          type: integer
+          example: 10
+        fec:
+          $ref: './common.yaml#/components/schemas/Fec'
+        user:
+          $ref: '#/components/schemas/FaceIdUser'
+        createdAt:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+        updatedAt:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+        deletedAt:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+    GetFramesResponse:
+      description: Get frames response
+      type: object
+      properties:
+        rows:
+          x-omitempty: false
+          type: array
+          items:
+            $ref: '#/components/schemas/Frame'
+        count:
+          x-omitempty: false
+          type: integer
+    FileMetadata:
+      description: Object representing file metadata
+      type: object
+      properties:
+        id:
+          x-omitempty: false
+          format: int64
+          type: integer
+          example: 10
+        created_at:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+        updated_at:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+        deleted_at:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+        data:
+          x-omitempty: false
+          type: string
+          x-go-type: json.RawMessage
+          x-go-type-import:
+            path: json
+            name: RawMessage
+        file_id:
+          x-omitempty: false
+          format: int64
+          type: integer
+          example: 10
+        file:
+          $ref: '#/components/schemas/GetFileResponse'
+    GetFileResponse:
+      description: Get file by processing id response
+      required:
+        - id
+        - mime
+        - created_at
+        - updated_at
+      type: object
+      properties:
+        id:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        filename:
+          x-omitempty: false
+          type: string
+        mime:
+          x-omitempty: false
+          type: string
+        created_at:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+        updated_at:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+        deleted_at:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+    CreateFileProcessingDownloadRequest:
+      description: Request body containing Youtube URL
+      type: object
+      properties:
+        url:
+          x-omitempty: false
+          type: string
+      required:
+        - url
+    CreatedByUser:
+      description: Request body containing file id and error
+      required:
+        - id
+        - firstName
+        - lastName
+        - email
+      type: object
+      properties:
+        id:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        firstName:
+          x-omitempty: false
+          type: string
+        lastName:
+          x-omitempty: false
+          type: string
+        email:
+          x-omitempty: false
+          type: string
+    FaceIdUser:
+      description: FaceId user
+      type: object
+      properties:
+        id:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        firstName:
+          x-omitempty: false
+          type: string
+        lastName:
+          x-omitempty: false
+          type: string
+        email:
+          x-omitempty: false
+          type: string
+        fileUrl:
+          x-omitempty: false
+          type: string
+    GetStatusResponse:
+      description: Object representing file processing status
+      required:
+        - id
+        - fileId
+        - status
+        - type
+        - attempt
+        - currentFrame
+        - filePath
+        - nbFrames
+        - frameRate
+        - createdBy
+        - mime
+        - createdAt
+        - updatedAt
+      type: object
+      properties:
+        id:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        fileId:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        status:
+          x-omitempty: false
+          type: string
+        type:
+          x-omitempty: false
+          type: string
+        error:
+          x-omitempty: false
+          type: string
+        attempt:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        frameStep:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        currentFrame:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        filename:
+          x-omitempty: false
+          type: string
+        filePath:
+          x-omitempty: false
+          type: string
+        nbFrames:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        frameRate:
+          x-omitempty: false
+          format: double
+          type: number
+          example: 10
+        createdBy:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        mime:
+          x-omitempty: false
+          type: string
+        createdAt:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+        updatedAt:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+        deletedAt:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+    GetFileProcessingResponse:
+      description: Object representing file processing
+      required:
+        - id
+        - fileId
+        - fileUrl
+        - status
+        - type
+        - attempt
+        - currentFrame
+        - filePath
+        - nbFrames
+        - duration
+        - frameRate
+        - createdBy
+        - mime
+        - user
+        - createdAt
+        - updatedAt
+      type: object
+      properties:
+        id:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        fileId:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        fileUrl:
+          x-omitempty: false
+          type: string
+        status:
+          x-omitempty: false
+          type: string
+        type:
+          x-omitempty: false
+          type: string
+        error:
+          x-omitempty: false
+          type: string
+        attempt:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        frameStep:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        currentFrame:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        filename:
+          x-omitempty: false
+          type: string
+        filePath:
+          x-omitempty: false
+          type: string
+        nbFrames:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        duration:
+          x-omitempty: false
+          format: double
+          type: number
+          example: 10
+        frameRate:
+          x-omitempty: false
+          format: double
+          type: number
+          example: 10
+        createdBy:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        mime:
+          x-omitempty: false
+          type: string
+        user:
+          $ref: '#/components/schemas/CreatedByUser'
+        createdAt:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+        updatedAt:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+        deletedAt:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+    CreateFileProcessingDownloadResponse:
+      description: File processing download response
+      required:
+        - id
+        - fileId
+        - status
+        - type
+        - attempt
+        - currentFrame
+        - filePath
+        - createdBy
+        - mime
+        - createdAt
+        - updatedAt
+      type: object
+      properties:
+        id:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        fileId:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        status:
+          x-omitempty: false
+          type: string
+        type:
+          x-omitempty: false
+          type: string
+        error:
+          x-omitempty: false
+          type: string
+        attempt:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        frameStep:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        currentFrame:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        filename:
+          x-omitempty: false
+          type: string
+        filePath:
+          x-omitempty: false
+          type: string
+        nbFrames:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        duration:
+          x-omitempty: false
+          format: double
+          type: number
+          example: 10
+        frameRate:
+          x-omitempty: false
+          format: double
+          type: number
+          example: 10
+        createdBy:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        mime:
+          x-omitempty: false
+          type: string
+        createdAt:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+        updatedAt:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+        deletedAt:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time

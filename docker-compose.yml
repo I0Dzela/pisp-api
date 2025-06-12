@@ -1,0 +1,24 @@
+version: "3.9"
+services:
+  pisp_specs:
+    build:
+      context: .
+    container_name: pisp.specs
+    environment:
+      GOPRIVATE: github.com/I0Dzela
+      LOG_FILEPATH: ./pisp-relations.log
+      SERVER_PORT: 7030
+      SERVER_SCHEME: http
+    hostname: pisp_specs
+    image: pisp/specs:1.0.0
+    networks:
+      - pisp
+    ports:
+      - "7030:7030"
+    restart: on-failure
+    tty: true
+
+networks:
+  pisp:
+    driver: bridge
+    name: pisp

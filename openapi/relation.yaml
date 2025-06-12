@@ -1,0 +1,327 @@
+openapi: 3.0.1
+info:
+  title: Relations Server
+  version: "1.2"
+servers:
+  - url: https://i0pisp.com:7009/
+  - url: https://pisp.local:6008/
+paths:
+  /relations:
+    get:
+      summary: Get relations
+      operationId: GetRelations
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+          description: Page
+          example: 0
+          required: false
+        - in: query
+          name: pageSize
+          schema:
+            type: integer
+          description: Page size
+          example: 0
+          required: false
+        - in: query
+          name: type
+          schema:
+            type: string
+          description: Relations source type
+          required: false
+        - in: query
+          name: userId
+          schema:
+            type: integer
+            format: uint64
+          description: User id
+          required: false
+        - in: query
+          name: subUserId
+          schema:
+            type: integer
+            format: uint64
+          description: Sub user id
+          required: false
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetRelationsResponse'
+  /relations/version:
+    get:
+      summary: Get relations service version
+      operationId: GetVersion
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: './common.yaml#/components/schemas/GetVersionResponse'
+  /relations/visualization-data-full/user/{userId}:
+    get:
+      summary: Get graph visualization data
+      operationId: GetGraphVisualizationData
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: integer
+            format: uint64
+          required: true
+          description: User id
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetVisualizationDataResponse'
+  /relations/visualization-data-mst/user/{userId}:
+    get:
+      summary: Get minimum spanning tree visualization data
+      operationId: GetMstVisualizationData
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: integer
+            format: uint64
+          required: true
+          description: User id
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetVisualizationDataResponse'
+  /relations/visualization-data-sp/user/{userId}/sub-user/{subUserId}:
+    get:
+      summary: Get shortest path visualization data
+      operationId: GetSpVisualizationData
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: integer
+            format: uint64
+          required: true
+          description: User id
+        - in: path
+          name: subUserId
+          schema:
+            type: integer
+            format: uint64
+          required: true
+          description: Sub user id
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetVisualizationDataResponse'
+  /relations/report/user/{userId}:
+    get:
+      summary: Get user relations visualization data full
+      operationId: GetUserRelationsReportByUserId
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: integer
+            format: uint64
+          required: true
+          description: User id
+      responses:
+        200:
+          description: OK
+
+components:
+  securitySchemes:
+    bearerAuth: # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    GetRelationsResponse:
+      description: Object representing list of relations
+      required:
+        - rows
+        - count
+      type: object
+      properties:
+        rows:
+          x-omitempty: false
+          type: array
+          items:
+            $ref: "#/components/schemas/RelationFileSource"
+        count:
+          x-omitempty: false
+          type: integer
+    CreateRelationDTO:
+      description: Create relation request body
+      type: object
+      properties:
+        user_id:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        user_sub_id:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        type:
+          x-omitempty: false
+          format: uint32
+          type: integer
+          example: 10
+        image_id:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        file_id:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        file_processing_id:
+          x-omitempty: false
+          format: uint64
+          type: integer
+          example: 10
+        frame:
+          x-omitempty: false
+          format: int64
+          type: integer
+          example: 10
+    RelationFileSource:
+      description: Relation file source
+      required:
+        - fileId
+        - fileProcessingId
+        - frames
+        - relationsCount
+        - createdAt
+      type: object
+      properties:
+        fileId:
+          x-omitempty: false
+          type: integer
+          format: uint64
+        fileProcessingId:
+          x-omitempty: false
+          type: integer
+          format: uint64
+        filename:
+          x-omitempty: false
+          type: string
+        mime:
+          x-omitempty: false
+          type: string
+        frames:
+          description: Frames with relations
+          type: array
+          items:
+            type: integer
+            format: uint64
+        relationsCount:
+          description: Relations count
+          x-omitempty: false
+          type: integer
+          format: uint64
+        fileUrl:
+          x-omitempty: false
+          type: string
+        createdAt:
+          x-omitempty: false
+          type: string
+          x-go-type: time.Time
+          x-go-type-import:
+            path: time
+            name: Time
+    SetRelationsDTO:
+      description: Request body containing list of relation types
+      type: object
+      properties:
+        type:
+          type: array
+          items:
+            type: integer
+    GetVisualizationDataResponse:
+      description: Relations visualization data
+      required:
+        - nodes
+        - edges
+      type: object
+      properties:
+        nodes:
+          description: Nodes
+          type: array
+          items:
+            $ref: '#/components/schemas/Node'
+        edges:
+          description: Edges
+          type: array
+          items:
+            $ref: '#/components/schemas/Edge'
+    Node:
+      description: Node
+      required:
+        - id
+        - firstName
+        - lastName
+        - email
+        - group
+        - userId
+        - root
+      type: object
+      properties:
+        id:
+          x-omitempty: false
+          type: string
+        firstName:
+          x-omitempty: false
+          type: string
+        lastName:
+          x-omitempty: false
+          type: string
+        email:
+          x-omitempty: false
+          type: string
+        group:
+          type: integer
+          format: uint32
+        userId:
+          type: integer
+          format: uint64
+        root:
+          x-omitempty: false
+          type: boolean
+    Edge:
+      description: Request body containing list of relation types
+      required:
+        - items
+      type: array
+      items:
+        type: integer
+        format: uint64

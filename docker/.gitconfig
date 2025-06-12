@@ -1,0 +1,12 @@
+[user]
+	email = i0dzkenan@gmail.com
+	name = i0nemesis
+[core]
+	editor = vim
+
+[url "git@bitbucket.org:"]
+	insteadOf = https://api.bitbucket.org/
+
+[url "ssh://git@github.com/"]
+	insteadOf = https://github.com/
+
