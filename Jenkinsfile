@@ -1,7 +1,7 @@
 pipeline {
     agent any
     stages {
-        stage('[PISP_SPECS] Docker image build') {
+        stage('[PISP_API] Docker image build') {
             steps {
                 script {
                     withCredentials([
@@ -19,7 +19,7 @@ pipeline {
             }
         }
 
-        stage('[PISP_SPECS] Docker image publish') {
+        stage('[PISP_API] Docker image publish') {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'local-docker-registry',
@@ -27,15 +27,15 @@ pipeline {
                                                       passwordVariable: 'password')]) {
                         sh '''
                         docker login -u ${username} -p ${password} localhost:5000
-                        docker tag pisp/specs:1.0.0 localhost:5000/pisp/specs:1.0.0 && \
-                        docker push localhost:5000/pisp/specs:1.0.0
+                        docker tag pisp/api:1.0.0 localhost:5000/pisp/api:1.0.0 && \
+                        docker push localhost:5000/pisp/api:1.0.0
                         '''
                     }
                 }
             }
         }
 
-        stage ('[PISP_SPECS] Restart deployment') {
+        stage ('[PISP_API] Restart deployment') {
             steps {
                 build job: 'pisp-deployment-3', propagate: true, wait: false
             }

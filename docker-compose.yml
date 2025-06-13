@@ -1,16 +1,16 @@
 version: "3.9"
 services:
-  pisp_specs:
+  api:
     build:
       context: .
-    container_name: pisp.specs
+    container_name: pisp.api
     environment:
       GOPRIVATE: github.com/I0Dzela
       LOG_FILEPATH: ./pisp-relations.log
       SERVER_PORT: 7030
       SERVER_SCHEME: http
-    hostname: pisp_specs
-    image: pisp/specs:1.0.0
+    hostname: api
+    image: pisp/api:1.0.0
     networks:
       - pisp
     ports:

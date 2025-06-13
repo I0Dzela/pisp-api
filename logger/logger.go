@@ -14,7 +14,7 @@ func Init() error {
 }
 
 func NewLogger(ex *logrus.Entry) cl.LoggerX {
-	e := logrus.WithFields(logrus.Fields{"service": "specs"})
+	e := logrus.WithFields(logrus.Fields{"service": "api"})
 	if ex != nil {
 		for k := range ex.Data {
 			e.Data[k] = ex.Data[k]

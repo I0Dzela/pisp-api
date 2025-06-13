@@ -66,7 +66,7 @@ RUN apk add --no-cache libc6-compat
 RUN apk add gcompat
 
 # docker container start script
-COPY --from=build /usr/local/app/docker/pisp_specs.prod.start.sh /app/start.sh
+COPY --from=build /usr/local/app/docker/pisp_api.prod.start.sh /app/start.sh
 
 # copy local ssl certificate
 COPY --from=build /usr/local/app/pisp.local.crt /usr/local/bin/i0pisp/pisp.local.crt

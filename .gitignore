@@ -26,3 +26,7 @@ bin/pisp-api
 /.idea/modules.xml
 /.idea/pisp-api.iml
 /.idea/vcs.xml
+
+
+docker/secrets/*
+!docker/secrets/.gitkeep

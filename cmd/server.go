@@ -12,7 +12,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-const service = "specs"
+const service = "api"
 
 var Server = &cli.Command{
 	Name:        "server",
