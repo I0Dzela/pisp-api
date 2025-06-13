@@ -1,3 +1,3 @@
-# pisp-specs
+# pisp-api
 
 

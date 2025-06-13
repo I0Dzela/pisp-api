@@ -1,1 +1,1 @@
-cd /usr/local/bin/i0pisp/ && ./pisp-specs server
+cd /usr/local/bin/i0pisp/ && ./pisp-api server

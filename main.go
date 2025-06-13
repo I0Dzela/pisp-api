@@ -1,9 +1,9 @@
 package main
 
 import (
+	"github.com/I0Dzela/pisp-api/cmd"
+	"github.com/I0Dzela/pisp-api/logger"
 	cl "github.com/I0Dzela/pisp-common/logger"
-	"github.com/I0Dzela/pisp-specs/cmd"
-	"github.com/I0Dzela/pisp-specs/logger"
 	"github.com/go-errors/errors"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"

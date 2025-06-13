@@ -8,4 +8,4 @@ output-options:
   skip-prune: true
 output: gen/facekit/facekitapi.gen.go
 import-mapping:
-  ./common.yaml: github.com/I0Dzela/pisp-specs/gen/common
+  ./common.yaml: github.com/I0Dzela/pisp-api/gen/common

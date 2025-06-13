@@ -15,7 +15,7 @@
 # vendor/
 
 # build
-bin/pisp-specs
+bin/pisp-api
 
 # logs
 *.log
@@ -24,5 +24,5 @@ bin/pisp-specs
 **/*/.idea
 /.idea/.gitignore
 /.idea/modules.xml
-/.idea/pisp-specs.iml
+/.idea/pisp-api.iml
 /.idea/vcs.xml

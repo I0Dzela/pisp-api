@@ -1,4 +1,4 @@
-module github.com/I0Dzela/pisp-specs
+module github.com/I0Dzela/pisp-api
 
 go 1.23.4
 
@@ -7,7 +7,6 @@ require (
 	github.com/getkin/kin-openapi v0.132.0
 	github.com/gin-gonic/gin v1.10.1
 	github.com/go-errors/errors v1.5.1
-	github.com/go-pg/pg/v10 v10.14.0
 	github.com/go-playground/validator/v10 v10.20.0
 	github.com/oapi-codegen/oapi-codegen/v2 v2.4.1
 	github.com/oapi-codegen/runtime v1.1.1
@@ -36,6 +35,7 @@ require (
 	github.com/go-openapi/jsonreference v0.19.6 // indirect
 	github.com/go-openapi/spec v0.20.4 // indirect
 	github.com/go-openapi/swag v0.23.0 // indirect
+	github.com/go-pg/pg/v10 v10.14.0 // indirect
 	github.com/go-pg/pg/v9 v9.2.1 // indirect
 	github.com/go-pg/zerochecker v0.2.0 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect

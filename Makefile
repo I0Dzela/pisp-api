@@ -6,6 +6,6 @@ generate:
 
 buildX:
 	#cd src; go build -ldflags="-X 'build.Version=v1.0.0' -X 'build.User=$(id -u -n)' -X 'build.Time=$(date)'" -x -o ../bin/pisp main.go
-	go build -ldflags="-X 'github.com/I0Dzela/pisp-specs/build.Version=3.0.2' -X 'github.com/I0Dzela/pisp-specs/build.User=$(shell whoami)' -X 'github.com/I0Dzela/pisp-specs/build.Time=$(shell TZ="CET" date +'%d.%m.%Y %H:%M:%S')'" -x -o ./bin/pisp-specs main.go
+	go build -ldflags="-X 'github.com/I0Dzela/pisp-api/build.Version=3.0.2' -X 'github.com/I0Dzela/pisp-api/build.User=$(shell whoami)' -X 'github.com/I0Dzela/pisp-api/build.Time=$(shell TZ="CET" date +'%d.%m.%Y %H:%M:%S')'" -x -o ./bin/pisp-api main.go
 
 all: clean generate buildX

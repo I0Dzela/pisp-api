@@ -14,7 +14,7 @@ import (
 	"strings"
 	"time"
 
-	externalRef0 "github.com/I0Dzela/pisp-specs/gen/common"
+	externalRef0 "github.com/I0Dzela/pisp-api/gen/common"
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/gin-gonic/gin"
 	"github.com/oapi-codegen/runtime"

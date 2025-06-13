@@ -2,9 +2,9 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/I0Dzela/pisp-api/config"
+	"github.com/I0Dzela/pisp-api/logger"
 	cl "github.com/I0Dzela/pisp-common/logger"
-	"github.com/I0Dzela/pisp-specs/config"
-	"github.com/I0Dzela/pisp-specs/logger"
 	"github.com/gin-gonic/gin"
 	"github.com/go-errors/errors"
 	swaggerFiles "github.com/swaggo/files"

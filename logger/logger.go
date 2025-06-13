@@ -1,8 +1,8 @@
 package logger
 
 import (
+	"github.com/I0Dzela/pisp-api/config"
 	cl "github.com/I0Dzela/pisp-common/logger"
-	"github.com/I0Dzela/pisp-specs/config"
 	"github.com/sirupsen/logrus"
 )
 
