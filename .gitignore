@@ -22,3 +22,7 @@ bin/pisp-specs
 
 # IntelliJ’s project specific settings
 **/*/.idea
+/.idea/.gitignore
+/.idea/modules.xml
+/.idea/pisp-specs.iml
+/.idea/vcs.xml
