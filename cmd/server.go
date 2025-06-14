@@ -2,14 +2,15 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/I0Dzela/pisp-api/config"
-	"github.com/I0Dzela/pisp-api/logger"
 	cl "github.com/I0Dzela/pisp-common/logger"
 	"github.com/gin-gonic/gin"
 	"github.com/go-errors/errors"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/urfave/cli/v2"
+
+	"github.com/I0Dzela/pisp-api/config"
+	"github.com/I0Dzela/pisp-api/logger"
 )
 
 const service = "api"
@@ -31,20 +32,28 @@ var Server = &cli.Command{
 		//gr := gin.Default()
 		gr := gin.New()
 		gr.UseH2C = true
-		gr.RemoveExtraSlash = true
+		//gr.RemoveExtraSlash = true
 		gr.Use(gin.Recovery())
 
 		gr.Use(cl.DefaultLogger(service))
 
 		gr.StaticFile("/openapi/common.yaml", "/app/openapi/common.yaml")
+
 		facekitSwaggerUrl := Init(gr, "facekit")
 		logX.Infof("Specs served at: %s", facekitSwaggerUrl)
+
 		fileSwaggerUrl := Init(gr, "file")
 		logX.Infof("Specs served at: %s", fileSwaggerUrl)
+
 		relationSwaggerUrl := Init(gr, "relation")
 		logX.Infof("Specs served at: %s", relationSwaggerUrl)
+
 		userSwaggerUrl := Init(gr, "user")
 		logX.Infof("Specs served at: %s", userSwaggerUrl)
+
+		for _, item := range gr.Routes() {
+			println("method:", item.Method, "path:", item.Path)
+		}
 
 		addr := fmt.Sprintf(":%d", config.Server.Port)
 		logX.Infof("rest server listening at %s", addr)
@@ -68,16 +77,11 @@ func logEnv(logX cl.LoggerX) {
 }
 
 func Init(gr *gin.Engine, serverName string) string {
-	swaggerSpecsPath := fmt.Sprintf("openapi/%s.yaml", serverName)
-	relativePath := fmt.Sprintf("%s", swaggerSpecsPath)
-	filePath := fmt.Sprintf("/app/%s", swaggerSpecsPath)
-	routePath := fmt.Sprintf("/%s/swagger/*any", serverName)
+	swaggerUrl := ginSwagger.URL(fmt.Sprintf("%s/openapi/%s.yaml", config.Server.SwaggerHost, serverName))
+	swaggerInstanceName := ginSwagger.InstanceName(serverName)
 
-	swaggerSpecsUrl := fmt.Sprintf("%s/%s", config.Server.SwaggerHost, relativePath)
-
-	gr.StaticFile(relativePath, filePath)
-	url := ginSwagger.URL(swaggerSpecsUrl) // The url pointing to API definition
-	gr.GET(routePath, ginSwagger.WrapHandler(swaggerFiles.Handler, url))
+	gr.GET(fmt.Sprintf("/%s/swagger/*any", serverName), ginSwagger.WrapHandler(swaggerFiles.NewHandler(), swaggerUrl, swaggerInstanceName))
+	gr.StaticFile(fmt.Sprintf("openapi/%s.yaml", serverName), fmt.Sprintf("/app/openapi/%s.yaml", serverName))
 
 	return fmt.Sprintf("%s/%s/swagger/index.html", config.Server.SwaggerHost, serverName)
 }
