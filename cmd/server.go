@@ -51,10 +51,6 @@ var Server = &cli.Command{
 		userSwaggerUrl := Init(gr, "user")
 		logX.Infof("Specs served at: %s", userSwaggerUrl)
 
-		for _, item := range gr.Routes() {
-			println("method:", item.Method, "path:", item.Path)
-		}
-
 		addr := fmt.Sprintf(":%d", config.Server.Port)
 		logX.Infof("rest server listening at %s", addr)
 		if config.Server.Scheme != "https" {
